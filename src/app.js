@@ -1,8 +1,10 @@
 const express = require('express');
 const authRouter=require('./routes/authRoutes')
+const cors=require('cors')
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/auth',authRouter)
 // Default Route
