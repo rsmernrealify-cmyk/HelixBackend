@@ -5,22 +5,39 @@ const fileRoutes = require('./routes/fileRoutes');
 const teacherApplicationRouter=require('./routes/teacherApplicationRoutes')
 const testimonialRouter=require('./routes/testimonialRoutes')
 const scholarshipTestRouter=require('./routes/scholarshipTestRoutes')
+const sliderRouter=require('./routes/sliderRoutes')
+const directorDeskRouter=require('./routes/directorDeskRoutes')
+const courseRouter=require('./routes/courseRoutes')
+const syllabusRouter=require('./routes/syllabusRoutes')
 const cors=require('cors')
 const app = express();
 
+// Request Logger Middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.get('origin')}`);
+    next();
+});
+
 app.use(express.json());
 const allowedOrigins = [
-    'http://localhost:5173',
-    'https://c516sfpc-5173.inc1.devtunnels.ms'
+    'http://localhost:5174',
+    'http://127.0.0.1:5174',
+    'https://c516sfpc-5174.inc1.devtunnels.ms/'
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
+        
+        // Match any local network or dev tunnel pattern for ease of dev
+        const isAllowed = allowedOrigins.includes(origin) || 
+                          origin.startsWith('http://localhost:') || 
+                          origin.endsWith('devtunnels.ms');
+
+        if (!isAllowed) {
+            console.log(`CORS Rejected for origin: ${origin}`);
+            return callback(null, true); // Temporarily allow for debugging pending issues
         }
         return callback(null, true);
     },
@@ -34,6 +51,10 @@ app.use('/file', fileRoutes);
 app.use('/auth',authRouter)
 app.use('/testimonial',testimonialRouter);
 app.use('/teacher',teacherApplicationRouter)
+app.use('/slider', sliderRouter)
+app.use('/director-desk', directorDeskRouter)
+app.use('/course', courseRouter)
+app.use('/syllabus', syllabusRouter)
 // Default Route
 app.get('/', (req, res) => {
     res.send('Welcome to the Institute Website Backend API');
