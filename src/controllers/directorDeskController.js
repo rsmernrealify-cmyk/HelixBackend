@@ -13,7 +13,7 @@ const getDirectorDesk = async (req, res) => {
 // Create or Update Director Desk Data
 const saveDirectorDesk = async (req, res) => {
     try {
-        const { title, content, signature } = req.body;
+        const { title, content, signature, features } = req.body;
         let contentArray = content;
         if (typeof content === 'string') {
             try {
@@ -23,9 +23,21 @@ const saveDirectorDesk = async (req, res) => {
             }
         }
 
-        // Filter out empty paragraphs
+        let featuresArray = features;
+        if (typeof features === 'string') {
+            try {
+                featuresArray = JSON.parse(features);
+            } catch (e) {
+                featuresArray = features.split(',').map(f => f.trim());
+            }
+        }
+
+        // Filter out empty items
         if (Array.isArray(contentArray)) {
             contentArray = contentArray.filter(p => p && p.trim() !== "");
+        }
+        if (Array.isArray(featuresArray)) {
+            featuresArray = featuresArray.filter(f => f && f.trim() !== "");
         }
 
         if (!title || !signature || !contentArray || contentArray.length === 0) {
@@ -44,13 +56,15 @@ const saveDirectorDesk = async (req, res) => {
             directorDesk.content = contentArray || directorDesk.content;
             directorDesk.signature = signature || directorDesk.signature;
             directorDesk.image = imageUrl;
+            directorDesk.features = featuresArray || directorDesk.features;
             await directorDesk.save();
         } else {
             directorDesk = new DirectorDesk({
                 title,
                 content: contentArray,
                 signature,
-                image: imageUrl
+                image: imageUrl,
+                features: featuresArray
             });
             await directorDesk.save();
         }

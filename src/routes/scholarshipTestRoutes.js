@@ -10,10 +10,13 @@ const {
 } = require("../controllers/scholarshipTestControllers");
 
 // Upload Scholarship Test Details
-router.post("/", upload.single("syllabus"),validateScholarshipTest, uploadScholarshipTest);
+router.post("/", upload.single("syllabus"), uploadScholarshipTest);
 
 // Get All Scholarship Tests
 router.get("/", getScholarshipTests);
+
+router.get("/ping", (req, res) => res.send("Scholarship router is alive"));
+router.post("/test-post", (req, res) => res.json({ message: "Test Post Worked", body: req.body }));
 
 // Get Scholarship Test by ID
 router.get("/:id", getScholarshipTestById);

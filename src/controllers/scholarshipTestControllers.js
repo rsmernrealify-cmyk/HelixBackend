@@ -1,32 +1,48 @@
 const ScholarshipTest = require("../models/ScholarshipTest");
+const { validationResult } = require("express-validator");
 
 // Upload Scholarship Test Details
 const uploadScholarshipTest = async (req, res) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() })
-  }
   try {
-    const { examName, class: examClass, stream, examDate, examTime, fees } = req.body;
+    const {
+      examName,
+      forClass,
+      stream,
+      examDate,
+      examTime,
+      fees,
+      applyLink,
+    } = req.body;
+
+    // Manual validation since we temporarily removed the middleware
+    if (!examName || !forClass || !stream || !examDate || !examTime || !fees) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
     if (!req.file) {
       return res.status(400).json({ error: "Syllabus PDF is required" });
     }
 
+    // Use relative URL for better reliability in dev tunnels
+    const syllabusUrl = `/uploads/${req.file.filename}`;
+
     const newTest = new ScholarshipTest({
       examName,
-      class: examClass,
+      forClass,
       stream,
       examDate,
       examTime,
-      syllabus: req.file.path, // Store file path
-      fees,
+      syllabus: syllabusUrl,
+      fees: Number(fees),
+      applyLink,
     });
 
     await newTest.save();
-    res.status(201).json({ message: "Scholarship test uploaded successfully", newTest });
+    
+    return res.status(201).json({ message: "Scholarship test uploaded successfully", newTest });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Scholarship Upload Error:", error);
+    return res.status(500).json({ error: "Server Error: " + error.message });
   }
 };
 

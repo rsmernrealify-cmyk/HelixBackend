@@ -9,8 +9,19 @@ const sliderRouter=require('./routes/sliderRoutes')
 const directorDeskRouter=require('./routes/directorDeskRoutes')
 const courseRouter=require('./routes/courseRoutes')
 const syllabusRouter=require('./routes/syllabusRoutes')
+const answerKeyRouter = require('./routes/answerKeyRoutes')
+const announcementRouter = require('./routes/announcementRoutes')
+const sectionConfigRouter = require('./routes/sectionConfigRoutes')
+const successStoryRouter = require('./routes/successStoryRoutes')
+const fs = require('fs');
+const salientFeatureRouter = require('./routes/salientFeatureRoutes')
 const cors=require('cors')
 const app = express();
+
+// Ensure uploads directory exists
+if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+}
 
 // Request Logger Middleware
 app.use((req, res, next) => {
@@ -22,7 +33,7 @@ app.use(express.json());
 const allowedOrigins = [
     'http://localhost:5174',
     'http://127.0.0.1:5174',
-    'https://c516sfpc-5174.inc1.devtunnels.ms/'
+    'https://kzlhxr7v-5174.inc1.devtunnels.ms'
 ];
 
 app.use(cors({
@@ -45,6 +56,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/scholarship-test',scholarshipTestRouter)
 app.use('/file', fileRoutes);
@@ -55,6 +67,15 @@ app.use('/slider', sliderRouter)
 app.use('/director-desk', directorDeskRouter)
 app.use('/course', courseRouter)
 app.use('/syllabus', syllabusRouter)
+app.use('/answer-key', answerKeyRouter)
+app.use('/announcement', announcementRouter)
+app.use('/section-config', sectionConfigRouter)
+app.use('/success-story', successStoryRouter)
+app.use('/salient-feature', salientFeatureRouter)
+app.get('/ping', (req, res) => {
+    res.send('pong');
+});
+
 // Default Route
 app.get('/', (req, res) => {
     res.send('Welcome to the Institute Website Backend API');

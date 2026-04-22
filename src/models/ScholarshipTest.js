@@ -5,7 +5,7 @@ const ScholarshipTestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  class: {
+  forClass: {
     type: String,
     required: true,
   },
@@ -28,6 +28,10 @@ const ScholarshipTestSchema = new mongoose.Schema({
   fees: {
     type: Number,
     required: true,
+  },
+  applyLink: {
+    type: String,
+    required: false,
   },
 });
 
