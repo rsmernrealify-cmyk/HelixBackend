@@ -15,7 +15,7 @@ const addSalientFeature = async (req, res) => {
     let imageUrl = "";
 
     if (req.file) {
-      imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+      imageUrl = `/uploads/${req.file.filename}`;
     }
 
     if (!title || !imageUrl) {

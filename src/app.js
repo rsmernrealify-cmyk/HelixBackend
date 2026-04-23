@@ -33,7 +33,7 @@ app.use(express.json());
 const allowedOrigins = [
     'http://localhost:5174',
     'http://127.0.0.1:5174',
-    'https://kzlhxr7v-5174.inc1.devtunnels.ms'
+    'https://lucent-cannoli-b5dbd4.netlify.app/'
 ];
 
 app.use(cors({

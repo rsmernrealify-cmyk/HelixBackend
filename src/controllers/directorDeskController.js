@@ -48,7 +48,7 @@ const saveDirectorDesk = async (req, res) => {
         let imageUrl = directorDesk ? directorDesk.image : "";
 
         if (req.file) {
-            imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+            imageUrl = `/uploads/${req.file.filename}`;
         }
 
         if (directorDesk) {

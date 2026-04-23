@@ -7,7 +7,7 @@ const createSlider = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: 'Image is required' });
         }
-        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        const imageUrl = `/uploads/${req.file.filename}`;
 
         const slider = new Slider({
             title,
