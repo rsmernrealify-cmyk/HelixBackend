@@ -46,8 +46,9 @@ app.use(cors({
 }));
 
 /* ---------------- STATIC FILES ---------------- */
-app.use("/uploads", express.static(uploadPath));
+const path = require('path');
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 /* ---------------- ROUTES ---------------- */
 app.use('/auth', authRouter);
 app.use('/file', fileRoutes);
