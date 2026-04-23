@@ -1,42 +1,28 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-/* ---------------- STORAGE ---------------- */
+const uploadPath = path.join(__dirname, '../uploads'); // IMPORTANT
+
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, 'uploads');
         cb(null, uploadPath);
     },
-
     filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName);
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
-/* ---------------- FILE FILTER ---------------- */
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/jpg",
-        "image/webp",
-        "image/gif",
-        "application/pdf"
-    ];
-
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error("Invalid file type"));
-    }
+    cb(null, true);
 };
 
-/* ---------------- MULTER EXPORT ---------------- */
-const upload = multer({
+module.exports = multer({
     storage,
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter
 });
-
-module.exports = upload;
